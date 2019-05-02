@@ -1,0 +1,10 @@
+module.exports = [{
+    "username": "ZooMic",
+    "password": "qwerty123",
+    "type": "admin"
+}, {
+    "username": "Marcin",
+    "password": "marcin95",
+    "type": "normal"
+}];
+    

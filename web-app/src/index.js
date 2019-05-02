@@ -6,6 +6,12 @@ import App from './containers/App/';
 import * as serviceWorker from './serviceWorker';
 import './index.scss';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faSpinner)
+
+
 ReactDOM.render(
     <Provider store={configureStore()}>
         <App />

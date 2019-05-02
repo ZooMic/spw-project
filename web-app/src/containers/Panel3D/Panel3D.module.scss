@@ -1,0 +1,23 @@
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbar {
+    background-color: #1f2327;
+    min-height: 250px;
+}
+
+.display {
+    background-color: silver;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+    & canvas {
+        background: white;
+        width: 100%;
+    }
+}
