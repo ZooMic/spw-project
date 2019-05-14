@@ -15,9 +15,7 @@ app.use(bodyParser.json());
 app.use(upload());
 tokenRoute(app);
 
-
 console.log('SERVER STARTED');
-
 
 app.post("/", function(req, res){
     if (req.files) {

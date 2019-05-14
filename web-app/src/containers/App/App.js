@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { app, signIn } from './App.module.scss';
 
@@ -7,16 +7,20 @@ import Panel3D from '../Panel3D/';
 
 import SignInPanel from '../SignInPanel/';
 
-class App extends Component {
-  render() {
-    return (
-      // <div className={app} >
-      //   <ProjectsTree />
-      //   <Panel3D />
-      // </div>
-      <SignInPanel />
-    );
-  }
+function App () {
+  const [logged, setLogged] = useState(false);
+  
+  useEffect(() => {
+    
+  }, [])
+
+  return (
+    // <div className={app} >
+    //   <ProjectsTree />
+    //   <Panel3D />
+    // </div>
+    <SignInPanel setLogged={setLogged}/>
+  );
 }
 
 export default connect()(App);

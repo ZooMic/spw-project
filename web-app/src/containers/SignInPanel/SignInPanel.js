@@ -10,9 +10,8 @@ import Pending from './Pending';
 
 import { main, margin, register } from './SignInPanel.module.scss';
 
-const TEMP_FILE_SERVER_URL = '/login';
 
-function SignInPanel ({}) {
+function SignInPanel ({ setLogged }) {
     const [isRegister, setRegister] = useState(false);
     const [isPending, setPending] = useState(false);
 
@@ -24,23 +23,18 @@ function SignInPanel ({}) {
         const password = target.querySelector('#sign-in-password').value;
         const rememberMe = target.querySelector('#sign-in-remember-me').checked;
         
-        setTimeout(() => {
-            setPending(false);
-            axios.post(TEMP_FILE_SERVER_URL, {
-                username: login,
-                password,
-            }).then(response => {
-                const token = response.data;
-                if (token) {
-                    // IF REMEMBER ME checked:
-                        // save in session storage
-                        // else save in local storage
-                }
-                console.log("RESPONSE", response);
-            });
-
-            console.log(login, password, rememberMe);
-        }, 5000);
+        setPending(false);
+        axios.post(TEMP_FILE_SERVER_URL, {
+            username: login,
+            password,
+        }).then(response => {
+            const token = response.data;
+            if (token) {
+                const storage = rememberMe ? sessionStorage : localStorage;
+                storage.setItem('token', token);
+                setLogged(true);
+            }
+        });
     }
 
     const onRegisterSubmit = (event) => {
