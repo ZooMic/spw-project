@@ -7,20 +7,32 @@ import Panel3D from '../Panel3D/';
 
 import SignInPanel from '../SignInPanel/';
 
-function App () {
-  const [logged, setLogged] = useState(false);
+import { checkStorage } from '../../actions/registrationActions';
+
+function App ({ checkStorage, isSignIn }) {
   
   useEffect(() => {
-    
+    checkStorage();
   }, [])
+
+  console.log('LOGGED', isSignIn);
 
   return (
     // <div className={app} >
     //   <ProjectsTree />
     //   <Panel3D />
     // </div>
-    <SignInPanel setLogged={setLogged}/>
+    <SignInPanel />
+    // setLogged={setLogged}
   );
 }
 
-export default connect()(App);
+const mapStateToProps = (state, ownProps) => ({
+  isSignIn: state.registration.isSignIn,
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  checkStorage: () => dispatch(checkStorage()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

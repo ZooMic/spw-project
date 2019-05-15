@@ -49,6 +49,7 @@ export const logout = () => {
 export const REGISTRATION_CHECK_STORAGE = 'REGISTRATION_CHECK_STORAGE';
 export const checkStorage = () => {
     return (dispatch) => {
+        console.log('CHECK STORAGE');
         let token = null;
         token = sessionStorage.getItem('token');
         if (token) {

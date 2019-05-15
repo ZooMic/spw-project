@@ -17,24 +17,10 @@ function SignInPanel ({ setLogged }) {
 
     const onLoginSubmit = (event) => {
         event.preventDefault();
-        setPending(true);
         const target = event.target;
         const login = target.querySelector('#sign-in-login').value;
         const password = target.querySelector('#sign-in-password').value;
         const rememberMe = target.querySelector('#sign-in-remember-me').checked;
-        
-        setPending(false);
-        axios.post(TEMP_FILE_SERVER_URL, {
-            username: login,
-            password,
-        }).then(response => {
-            const token = response.data;
-            if (token) {
-                const storage = rememberMe ? sessionStorage : localStorage;
-                storage.setItem('token', token);
-                setLogged(true);
-            }
-        });
     }
 
     const onRegisterSubmit = (event) => {
