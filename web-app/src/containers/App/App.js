@@ -1,30 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { app, signIn } from './App.module.scss';
+import { app } from './App.module.scss';
 
 import ProjectsTree from '../ProjectsTree/';
 import Panel3D from '../Panel3D/';
-
 import SignInPanel from '../SignInPanel/';
+import MainNavigation from '../MainNavigation/';
 
 import { checkStorage } from '../../actions/registrationActions';
 
 function App ({ checkStorage, isSignIn }) {
-  
   useEffect(() => {
     checkStorage();
   }, [])
 
-  console.log('LOGGED', isSignIn);
+  if (isSignIn) {
+    return (
+      <div className={app} >
+        <MainNavigation />
+        <ProjectsTree />
+        <Panel3D />
+      </div>
+    );
+  } else {
+    return <SignInPanel />
+  }
+}
 
-  return (
-    // <div className={app} >
-    //   <ProjectsTree />
-    //   <Panel3D />
-    // </div>
-    <SignInPanel />
-    // setLogged={setLogged}
-  );
+App.propTypes = {
+  isSignIn: PropTypes.bool.isRequired,
 }
 
 const mapStateToProps = (state, ownProps) => ({

@@ -3,7 +3,6 @@ import axios from 'axios';
 export const loginAction = (username, password, rememberMe) => {
     return (dispatch) => {
         dispatch(loginFetchingStarted());
-
         axios.post('/login', { username, password })
         .then(response => {
             const token = response.data;
@@ -16,7 +15,10 @@ export const loginAction = (username, password, rememberMe) => {
             }
         })
         .catch(error => {
-            dispatch(loginError(error));
+            if (error && error.response && error.response.data && error.response.data.message) {
+                const msg = error.response.data.message;
+                dispatch(loginError(msg));
+            }
         });
     }
 };
@@ -35,7 +37,7 @@ const loginFetchingFinished = (token) => ({
 export const REGISTRATION_LOGIN_ERROR = 'REGISTRATION_LOGIN_ERROR';
 const loginError = (error) => ({
     type: REGISTRATION_LOGIN_ERROR,
-    payload: error.message,
+    payload: error,
 });
 
 

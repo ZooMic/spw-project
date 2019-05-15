@@ -20,7 +20,7 @@ export default (state = defaultState, action) => {
         case REGISTRATION_LOGIN_FETCHING_FINISHED:
             return { ...state,  ...action.payload, pending: false, error: null, isSignIn: true };
         case REGISTRATION_LOGIN_ERROR:
-            return { ...state, ...action.payload, pending: false };
+            return { ...state, error: action.payload, pending: false };
         case REGISTRATION_LOGOUT:
             return { ...state, pending: false, error: null, token: null, isSignIn: false };
         case REGISTRATION_CHECK_STORAGE:

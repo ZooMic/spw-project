@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import propTypes from 'prop-types';
+import React, { useEffect } from 'react';
+// import PropTypes from 'prop-types';
 import * as THREE from 'three'; 
 
 import { main, toolbar, display} from './Panel3D.module.scss';
@@ -9,7 +9,7 @@ let scene = null;
 let camera = null;
 let renderer = null;
 
-function Panel3D({ }) {
+function Panel3D() {
     const [canvasRef, canvasSize] = useFitCanvasToParent();
 
     useEffect(() => {

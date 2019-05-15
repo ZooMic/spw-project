@@ -1,13 +1,10 @@
-import React, { Fragment } from 'react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import React from 'react';
 import { margin } from './SignInPanel.module.scss';
 
-function Pending ({ }) {
+function Pending () {
     return (
         <div className={margin}>
-            <FontAwesomeIcon icon="spinner" size="9x" spin={true} color="#cecece"/>
+            <i className="fa fa-9x fa-spinner faa-slow faa-spin animated"/>
         </div> 
     );
 }

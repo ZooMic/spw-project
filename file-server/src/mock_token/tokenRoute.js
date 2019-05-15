@@ -19,7 +19,7 @@ function tokenRoute(app) {
         if (req.body) {
             const { username, password } = req.body;
             const user = users.find(u => u.username === username);
-            if (user) {
+            if (user && user.password === password) {
                 const { type } = user;
                 const token = jwt.sign({ username, type }, privateKey);
                 res.json(token);

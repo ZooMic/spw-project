@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import propTypes from 'prop-types';
 import { Treebeard } from 'react-treebeard';
-import { allWrapper, searchWrapper, treeWrapper, pagesWrapper, active } from './ProjectsTree.module.scss';
+import { allWrapper, searchWrapper, treeWrapper, pagesWrapper, noClick } from './ProjectsTree.module.scss';
 
 import getProjectsList from '../../api/getProjectsList';
 
@@ -14,10 +14,9 @@ function ProjectsTree({ batchSize }) {
     const [activeId, setActiveId] = useState(null);
     const [page, setPage] = useState(1);
     const [itemsAmount, setItemsAmount] = useState(0);
-    
 
     useEffect(() => {
-        getProjectsList(1000, page, batchSize).then((data) => {
+        getProjectsList(101, page, batchSize).then((data) => {
             setData(data.items);
             setItemsAmount(data.allItemsAmount);
         });
@@ -44,9 +43,12 @@ function ProjectsTree({ batchSize }) {
         }
     }
 
-    const onPageChange = (number) => () => {
-        setPage(number);
-    }
+    const amount = Math.ceil(itemsAmount / batchSize)
+    const onFirstPage = () => setPage(1);
+    const onPrevPage = () => setPage(page > 1 ? page - 1 : 1);
+    const onNextPage = () => setPage(page < amount ? page + 1 : amount);
+    const onLastPage = () => setPage(amount);
+    
 
     return (
         <div className={allWrapper}>
@@ -60,11 +62,11 @@ function ProjectsTree({ batchSize }) {
                 </div>
             </div>
             <div className={pagesWrapper}>
-                {generatePaginationButton(
-                    Math.ceil(itemsAmount/batchSize),
-                    page,
-                    onPageChange,
-                )}
+                <button onClick={onFirstPage}>{"<<"}</button>
+                <button onClick={onPrevPage}>{"<"}</button>
+                <button onClick={x => x} className={noClick} disabled={true}>{page}</button>
+                <button onClick={onNextPage}>{">"}</button>
+                <button onClick={onLastPage}>{">>"}</button>
             </div>
         </div>
     );
@@ -75,19 +77,7 @@ ProjectsTree.propTypes = {
 }
 
 ProjectsTree.defaultProps = {
-    batchSize: 200,
+    batchSize: 25,
 }
 
 export default ProjectsTree;
-
-function generatePaginationButton(amount, selected, callback) {
-    const elements = [];
-    for (let i = 1; i <= amount; i++) {
-        elements.push(
-            <button key={`pagination-${i}`} onClick={callback(i)} className={selected === i ? active: ''}>
-                {i}
-            </button>
-        );
-    }
-    return elements;
-}
