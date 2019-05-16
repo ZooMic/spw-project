@@ -18,6 +18,8 @@ function App ({ checkStorage, isSignIn }) {
     checkStorage();
   }, [])
 
+  // SOMETHING DID CHANGE
+
   if (isSignIn) {
     return (
       <div className={app} >
@@ -36,6 +38,8 @@ function App ({ checkStorage, isSignIn }) {
     return <SignInPanel />
   }
 }
+
+// Few more changes
 
 App.propTypes = {
   isSignIn: PropTypes.bool.isRequired,
