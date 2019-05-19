@@ -23,23 +23,36 @@ function ProjectsTree({ batchSize }) {
     }, [page]);
 
     const onToggle = (node) => {
-        if (node.children) {
-            const cpData = {...data};
-            const selected = cpData.children.find(n => n.id === node.id);
-            if (activeId !== null) {
-                const active = cpData.children.find(n => n.id === activeId);
-                if (active) {
-                    active.active = false;
-                }
+        const items = {...data};
+        let item;
+        items.children.forEach(i => {
+            i.active = false;
+            if (i.id === node.id) {
+                item = i;
+            } else {
+                i.children.forEach(j => {
+                    j.active = false;
+                    if (j.id === node.id) {
+                        item = j;
+                    } else {
+                        j.children.forEach(k => {
+                            k.active = false;
+                            if (k.id === node.id) {
+                                item = k;
+                            }
+                        })
+                    }
+                });
             }
-            if (selected) {
-                selected.toggled = !selected.toggled;
-                selected.active = true;
-                setData(cpData);
-                setActiveId(selected.id);
+        });
+
+
+        if (item) {
+            if (node.children) {
+                item.toggled = !item.toggled;
             }
-        } else {
-            console.log('OPEN FILE', node.id, node.path);
+            item.active = true;
+            setData(items);
         }
     }
 

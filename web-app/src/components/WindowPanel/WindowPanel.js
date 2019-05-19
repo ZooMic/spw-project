@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { outer, inner, closeBtn } from './WindowPanel.module.scss';
 
-function WindowPanel ({ children, onClose }) {
+function WindowPanel ({ children, onClose, isVisible }) {
+    if (!isVisible) {
+        return null;
+    }
 
     return (
         <div className={outer}>

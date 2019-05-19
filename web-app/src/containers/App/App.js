@@ -9,7 +9,7 @@ import SignInPanel from '../SignInPanel/';
 import MainNavigation from '../MainNavigation/';
 import Specification from '../Specifiaction/';
 
-import WindowPanel from '../../components/WindowPanel/';
+import Windows from '../Windows/';
 
 import { checkStorage } from '../../actions/registrationActions';
 
@@ -29,7 +29,7 @@ function App ({ checkStorage, isSignIn }) {
             <Specification />
           </div>
         </div>
-        <WindowPanel><span>HELLO WINDOW!</span></WindowPanel>
+        {/* <Windows/> */}
       </div>
     );
   } else {

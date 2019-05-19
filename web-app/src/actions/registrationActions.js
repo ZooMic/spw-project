@@ -7,9 +7,11 @@ export const loginAction = (username, password, rememberMe) => {
         .then(response => {
             const token = response.data;
             if (token) {
-                const storage = rememberMe ? sessionStorage : localStorage;
+                const storage = rememberMe ? localStorage : sessionStorage
                 storage.setItem('token', token);
-                dispatch(loginFetchingFinished(token));
+                setTimeout(() => { //Debug purpose only!
+                    dispatch(loginFetchingFinished(token));
+                }, 2500);
             } else {
                 dispatch(loginError(new Error('Invalid response from server.')));
             }
@@ -51,11 +53,10 @@ export const logout = () => {
 export const REGISTRATION_CHECK_STORAGE = 'REGISTRATION_CHECK_STORAGE';
 export const checkStorage = () => {
     return (dispatch) => {
-        console.log('CHECK STORAGE');
         let token = null;
-        token = sessionStorage.getItem('token');
-        if (token) {
-            token = localStorage.getItem('token');
+        token = localStorage.getItem('token');
+        if (!token) {
+            token = sessionStorage.getItem('token');
         }
         if (token) {
             dispatch(loginFetchingFinished(token))

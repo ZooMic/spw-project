@@ -1,4 +1,4 @@
-module.exports = [{
+[{
     "username": "ZooMic",
     "password": "qwerty123",
     "type": "admin"
@@ -6,5 +6,4 @@ module.exports = [{
     "username": "Marcin",
     "password": "marcin95",
     "type": "normal"
-}];
-    
+}]
