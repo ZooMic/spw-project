@@ -29,7 +29,7 @@ function App ({ checkStorage, isSignIn }) {
             <Specification />
           </div>
         </div>
-        {/* <Windows/> */}
+        <Windows/>
       </div>
     );
   } else {

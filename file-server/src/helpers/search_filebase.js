@@ -1,7 +1,6 @@
 const fs = require('fs');
 const filebase = require('../../filebase/filebase.json');
 
-
 const projectExist = projectName => !!filebase.list.find(name => name === projectName);
 
 const canUserView = (username, projectName) => {
@@ -53,7 +52,9 @@ const createFilebaseTree = username => {
                 }
                 let folder = proj.children[j];
                 let files = fs.readdirSync(`${process.env.CURRENT_PATH}/filebase/${project}/${meta.list[j]}/`);
-                folder.children = files.map(file => ({
+                folder.children = files
+                .sort((a, b) => Number(a.split('.')[0]) - Number(b.split('.')[0]))
+                .map(file => ({
                     id: `${project}-${meta.list[j]}-${j}-${file}`,
                     name: file,
                 }));

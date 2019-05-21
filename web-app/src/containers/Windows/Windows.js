@@ -5,7 +5,7 @@ import FileUpload from './FileUpload/';
 function Windows () {
     return (
         <Fragment>
-            {/* <FileUpload /> */}
+            <FileUpload />
         </Fragment>
     );
 };

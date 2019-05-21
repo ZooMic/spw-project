@@ -2,17 +2,20 @@ import axios from 'axios';
 import getToken from '../api/getToken';
 
 export default function uploadFiles(projectName, files) {
-    const formData = new FormData();
-
-    formData.append('token', getToken());
-    formData.append('projectName', projectName);
-    for (let i = 0; i < files.length; i++) {
-        formData.append(`files[${i}]`, files[i]);
-    }
-
-    return axios.post('http://localhost:3005/upload-files', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
+    let sizeCount = 0;
+    const uploaders = files.map(file => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("token", getToken());
+        formData.append("projectName", projectName);
+        return axios.post("http://localhost:3005/upload-files", formData, {
+            headers: { "X-Requested-With": "XMLHttpRequest" },
+        }).then(response => {
+            sizeCount += files.size;
+            console.log('TOTAL SIZE', sizeCount);
+            console.log('RESPONSE', response);
+        });
     });
+
+    return axios.all(uploaders);
 }

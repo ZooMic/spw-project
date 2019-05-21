@@ -38,25 +38,23 @@ function FileUpload () {
         });
     }
 
-    const onSelect = (event) => {
+    const onSubmit = (event) => {
         event.preventDefault();
         setPending(true);
         const element = event.target;
         
         const projectName = element.querySelector('#project-name').value;
-        const files = element.querySelector('#project-files').files;
+        const { files } = filesData;
+        // const files = element.querySelector('#project-files').files;
 
         uploadFiles(projectName, files)
         .then(() => {
-            console.log('UPLOAD FILES');
+            console.log('upload files DONE');
+            setPending(false);
         })
         .catch(() => {
-            console.log('STUUFFFF');
+            console.log('upload files CATCH');
         });
-
-        setTimeout(() => {
-            setPending(false);
-        }, 100000);
     }
 
     const { uploadedSize, totalSize } = filesData;
@@ -67,7 +65,7 @@ function FileUpload () {
                 {
                     isPending ?
                         <Pending className={pending}>Uploading files: {uploadedSize} / {totalSize} MB [{Math.ceil(uploadedSize * 100 / totalSize) || 0} %]</Pending>:
-                        <Form onSubmit={onSelect}>
+                        <Form onSubmit={onSubmit}>
                             <Form.Group controlId="project-name">
                                 <Form.Label className={bold}>Project name</Form.Label>
                                 <Form.Control type="text" placeholder="Enter project name" className={!!error ? "is-invalid" : ''} />
