@@ -1,0 +1,21 @@
+{
+  "name": "wire-draw-soft-api",
+  "version": "1.0.0",
+  "description": "This project contains api, which provides data for wire draw soft web client",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node index.js"
+  },
+  "author": "Tomasz Maj",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "sequelize": "^5.2.11",
+    "sqlite3": "^4.0.6",
+    "ws": "^6.2.1",
+    "xml2js": "^0.4.19"
+  }
+}

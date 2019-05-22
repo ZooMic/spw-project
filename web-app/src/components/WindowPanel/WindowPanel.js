@@ -6,14 +6,19 @@ function WindowPanel ({ children, onClose, isVisible }) {
         return null;
     }
 
-    return (
-        <div className={outer}>
-            <div className={inner}>
-                {children}
-            </div>
-            <button onClick={onClose} className={closeBtn}><i className="fa fa-times-circle"/></button>
+    const toReturn =
+    <div className={outer}>
+        <div className={inner}>
+            {children}
         </div>
-    );
+        <button onClick={onClose} className={closeBtn}><i className="fa fa-times-circle"/></button>
+    </div>
+
+    if (isVisible) {
+        return toReturn;
+    } else {
+        return null;
+    }
 };
 
 export default WindowPanel;

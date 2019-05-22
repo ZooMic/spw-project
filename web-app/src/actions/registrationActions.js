@@ -1,9 +1,11 @@
 import axios from 'axios';
 
+const apiUrl = 'https://localhost:44325/Auth'
+
 export const loginAction = (username, password, rememberMe) => {
     return (dispatch) => {
         dispatch(loginFetchingStarted());
-        axios.post('/login', { username, password })
+        axios.post(`${apiUrl}/login`, { username, password })
         .then(response => {
             const token = response.data;
             if (token) {

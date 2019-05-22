@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { app, mainPanel } from './App.module.scss';
@@ -13,7 +13,20 @@ import Windows from '../Windows/';
 
 import { checkStorage } from '../../actions/registrationActions';
 
-function App ({ checkStorage, isSignIn }) {
+function App ({ checkStorage, isSignIn }) { 
+
+  const [windowVisible, setWindowVisible] = useState(false);
+  const [windowContent, setWindowContent] = useState(null);
+
+  const closeWindow = () => {
+    setWindowVisible(false);
+  };
+
+  const turnOnAndSetWindowContent = (windowContent) => {
+    setWindowVisible(true);
+    setWindowContent(windowContent);
+  }
+
   useEffect(() => {
     checkStorage();
   }, [])
@@ -21,7 +34,7 @@ function App ({ checkStorage, isSignIn }) {
   if (isSignIn) {
     return (
       <div className={app} >
-        <MainNavigation />
+        <MainNavigation setWindowContent={turnOnAndSetWindowContent}/>
         <ProjectsTree />
         <div className={mainPanel}>
           <div>
@@ -30,6 +43,7 @@ function App ({ checkStorage, isSignIn }) {
           </div>
         </div>
         <Windows/>
+        <WindowPanel isVisible={windowVisible} onClose={closeWindow}>{windowContent}</WindowPanel>
       </div>
     );
   } else {

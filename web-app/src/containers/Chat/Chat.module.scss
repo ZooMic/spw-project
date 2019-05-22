@@ -1,0 +1,20 @@
+.chat {
+    display: flex;
+    position: relative;
+    width: 1500px;
+    height: 800px;
+    max-height: 800px;
+    overflow: auto;    
+} 
+
+.chat .chatUsers {
+    width: 40%; 
+    max-height: 800px; 
+    overflow: auto;  
+    margin: 20px;
+}
+
+.chat .chatMessages {
+    width: 60%; 
+    margin: 20px;
+}
