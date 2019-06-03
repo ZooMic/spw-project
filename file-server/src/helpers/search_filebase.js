@@ -1,15 +1,26 @@
 const fs = require('fs');
-const filebase = require('../../filebase/filebase.json');
+const path = require('path');
+console.log('process.env.CURRENT_PATH', );
 
-const projectExist = projectName => !!filebase.list.find(name => name === projectName);
+let filebase = require(path.join(process.env.CURRENT_PATH, 'filebase/filebase.json'));
+
+const getFilebase = () => {
+    return {...filebase};
+}
+
+const setFilebase = newFilebase => {
+    filebase = newFilebase;
+    fs.writeFileSync(path.join(process.env.CURRENT_PATH, 'filebase/filebase.json'), JSON.stringify(newFilebase));
+}
+
+const projectExist = projectName => !!getFilebase().list.find(name => name === projectName);
 
 const canUserView = (user, projectName) => {
-    // IF PROJECT NOT EXIST - ONLY ADMIN CAN CREATE PROJECT
-    if ((!projectExist(projectName)) && user.type === 'admin') {
-        return true;
+    if (projectExist(projectName)) {
+        const meta = require(path.join(process.env.CURRENT_PATH, `filebase/${projectName}/meta.json`));
+        return !!meta.users.find(u => u === user.username);
     }
-    // IF PROJECT EXIST - USER NAME MUST BE SET IN META
-    return !!require(`../../filebase/${projectName}/meta.json`).users.find(user => user === user.username);
+    return false;
 }
 
 const createFilebaseTree = user => {
@@ -30,6 +41,7 @@ const createFilebaseTree = user => {
                 name: project,
                 children: [],
                 toggled: false,
+                value: project,
             });
 
             let meta = require(`../../filebase/${project}/meta.json`);
@@ -42,6 +54,7 @@ const createFilebaseTree = user => {
                         name: `${meta.list[j]} [L]`,
                         toggled: false,
                         children: [],
+                        value: meta.list[j],
                     });
                 } else {
                     proj.children.push({
@@ -49,6 +62,7 @@ const createFilebaseTree = user => {
                         name: meta.list[j],
                         toggled: false,
                         children: [],
+                        value: meta.list[j],
                     });
                 }
                 let folder = proj.children[j];
@@ -58,6 +72,7 @@ const createFilebaseTree = user => {
                 .map(file => ({
                     id: `${project}-${meta.list[j]}-${j}-${file}`,
                     name: file,
+                    value: file,
                 }));
             }
         }
@@ -78,4 +93,6 @@ module.exports = {
     canUserView,
     createFilebaseTree,
     getLatest,
+    getFilebase,
+    setFilebase,
 };

@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import { Treebeard } from 'react-treebeard';
 import { allWrapper, searchWrapper, treeWrapper, pagesWrapper, noClick } from './ProjectsTree.module.scss';
 
+import { addNewFile as addNewFileAction, setSelection as setSelectionAction } from '../../actions/filesActions';
 import getProjectsList from '../../api/getProjectsList';
+import getFile from '../../api/getFile';
 
-function ProjectsTree({ batchSize }) {
+import convertProjectFile from '../../helpers/convertProjectFile';
+
+function ProjectsTree({ batchSize, files, addNewFile, setSelection }) {
     const [data, setData] = useState({
         id: 'projects-0',
         name: 'Projects',
@@ -24,7 +29,7 @@ function ProjectsTree({ batchSize }) {
 
     const onToggle = (node) => {
         const items = {...data};
-        let item;
+        let item, iProject, jArchive, kFile;
         items.children.forEach(i => {
             i.active = false;
             if (i.id === node.id) {
@@ -39,6 +44,9 @@ function ProjectsTree({ batchSize }) {
                             k.active = false;
                             if (k.id === node.id) {
                                 item = k;
+                                iProject = i.value;
+                                jArchive = j.value;
+                                kFile = k.value;
                             }
                         })
                     }
@@ -46,10 +54,27 @@ function ProjectsTree({ batchSize }) {
             }
         });
 
-
         if (item) {
             if (node.children) {
                 item.toggled = !item.toggled;
+            } else {
+                const filePath = `${iProject}/${jArchive}/${kFile}`;
+                let resFile = files[filePath];
+
+                if (!resFile) {
+                    getFile(filePath).then((res) => {
+                        console.log("FILES", res);
+                        resFile = res && res.data && res.data.data || {};
+                        resFile = convertProjectFile(resFile);
+                        addNewFile(filePath, resFile);
+                        setSelection(filePath);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                } else {
+                    addNewFile(filePath, resFile);
+                    setSelection(filePath);
+                }
             }
             item.active = true;
             setData(items);
@@ -93,4 +118,13 @@ ProjectsTree.defaultProps = {
     batchSize: 25,
 }
 
-export default ProjectsTree;
+const mapStateToProps = (state) => ({
+    files: state.files,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    addNewFile: (path, value) => dispatch(addNewFileAction(path, value)),
+    setSelection: (path) => dispatch(setSelectionAction(path)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectsTree);

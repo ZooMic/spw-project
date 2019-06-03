@@ -1,13 +1,14 @@
+const dotenv = require('dotenv');
+dotenv.config(); // LOADING ENVIRONMENT VARIABLES
+process.env.CURRENT_PATH = __dirname;
+
 const express = require('express');
 const upload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const routes = require('./src/routes/index');
 const path = require('path');
 
-dotenv.config(); // LOADING ENVIRONMENT VARIABLES
-process.env.CURRENT_PATH = __dirname;
 
 const app = express();
 const http = require('http').Server(app); 

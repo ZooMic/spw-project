@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
 import registrationReducer from './registrationReducer';
 import projectsReducer from './projectsReducer';
+import windowsReducer from './windowsReducer';
+import filesReducer from './filesReducer';
 
-import fileUploadReducer from './fileUploadReducer';
 
 export default combineReducers({
     projects: projectsReducer,
     registration: registrationReducer,
-    fileUpload: fileUploadReducer,
+    windows: windowsReducer,
+    files: filesReducer,
 });

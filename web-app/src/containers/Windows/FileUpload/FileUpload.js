@@ -9,12 +9,14 @@ import Pending from '../../../components/Pending/';
 
 import { wrapper, bold, uploadBtn, errorCSS, filesList, pending, filesSizeCSS } from './FileUpload.module.scss';
 
-function FileUpload () {
+let tempSize = 0; // REQUIRED FOR FAST UPDATE
+function FileUpload (params) {
     const [error, setError] = useState(null);
     const [filesData, setFiles] = useState({
         files: [],
-        totalSize: 0,
-        uploadedSize: 0,
+        totalSize: 0, // MB
+        currentSize: 0, // MB
+        uploadedSize: 0, // B
     });
     const [isPending, setPending] = useState(false);
 
@@ -38,33 +40,47 @@ function FileUpload () {
         });
     }
 
+    const { onClose } = params;
     const onSubmit = (event) => {
         event.preventDefault();
+        setError(null);
         setPending(true);
         const element = event.target;
         
         const projectName = element.querySelector('#project-name').value;
         const { files } = filesData;
-        // const files = element.querySelector('#project-files').files;
+        tempSize = 0;
 
-        uploadFiles(projectName, files)
-        .then(() => {
-            console.log('upload files DONE');
-            setPending(false);
+        uploadFiles(projectName, files, (response, file) => {
+            tempSize += file.size;
+            setFiles({
+                ...filesData, 
+                uploadedSize: tempSize,
+                currentSize: Math.ceil(tempSize * 100 / 1000 / 1000) / 100,
+            });
         })
-        .catch(() => {
-            console.log('upload files CATCH');
+        .then(() => {
+            // WAIT FOR USER TO SEE 100% per 1s
+            setTimeout(() => {
+                setPending(false);
+                onClose();
+            }, 1000);
+        })
+        .catch((err) => {
+            setPending(false);
+            setError(err.message);
         });
     }
 
-    const { uploadedSize, totalSize } = filesData;
+    const { currentSize, totalSize } = filesData;
+
     return (
-        <WindowPanel isVisible={true}>
+        <WindowPanel {...params}>
             <div className={wrapper}>
                 <h2>Create new project / Upload files</h2>
                 {
                     isPending ?
-                        <Pending className={pending}>Uploading files: {uploadedSize} / {totalSize} MB [{Math.ceil(uploadedSize * 100 / totalSize) || 0} %]</Pending>:
+                        <Pending className={pending}>Uploading files: {currentSize} / {totalSize} MB [{Math.ceil(currentSize * 100 / totalSize) || 0} %]</Pending>:
                         <Form onSubmit={onSubmit}>
                             <Form.Group controlId="project-name">
                                 <Form.Label className={bold}>Project name</Form.Label>
@@ -97,5 +113,6 @@ function FileUpload () {
         </WindowPanel>
     );
 };
+
 
 export default FileUpload;

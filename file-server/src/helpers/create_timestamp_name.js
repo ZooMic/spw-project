@@ -1,5 +1,5 @@
-module.exports = function getFolderNameFromTimestamp () {
-    const date = new Date();
+module.exports = function getFolderNameFromTimestamp (timestamp) {
+    const date = timestamp ? new Date(Number(timestamp)) : new Date();
     
     // DAY
     const D = String(date.getDate());
