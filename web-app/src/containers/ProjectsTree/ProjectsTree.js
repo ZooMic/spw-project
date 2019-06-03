@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import propTypes from 'prop-types';
 import { Treebeard } from 'react-treebeard';
 import { allWrapper, searchWrapper, treeWrapper, pagesWrapper, noClick } from './ProjectsTree.module.scss';
 
+import { addNewFile as addNewFileAction, setSelection as setSelectionAction } from '../../actions/filesActions';
 import getProjectsList from '../../api/getProjectsList';
+import getFile from '../../api/getFile';
 
-function ProjectsTree({ batchSize }) {
+import convertProjectFile from '../../helpers/convertProjectFile';
+
+function ProjectsTree({ batchSize, files, addNewFile, setSelection }) {
     const [data, setData] = useState({
         id: 'projects-0',
         name: 'Projects',
@@ -23,23 +28,56 @@ function ProjectsTree({ batchSize }) {
     }, [page]);
 
     const onToggle = (node) => {
-        if (node.children) {
-            const cpData = {...data};
-            const selected = cpData.children.find(n => n.id === node.id);
-            if (activeId !== null) {
-                const active = cpData.children.find(n => n.id === activeId);
-                if (active) {
-                    active.active = false;
+        const items = {...data};
+        let item, iProject, jArchive, kFile;
+        items.children.forEach(i => {
+            i.active = false;
+            if (i.id === node.id) {
+                item = i;
+            } else {
+                i.children.forEach(j => {
+                    j.active = false;
+                    if (j.id === node.id) {
+                        item = j;
+                    } else {
+                        j.children.forEach(k => {
+                            k.active = false;
+                            if (k.id === node.id) {
+                                item = k;
+                                iProject = i.value;
+                                jArchive = j.value;
+                                kFile = k.value;
+                            }
+                        })
+                    }
+                });
+            }
+        });
+
+        if (item) {
+            if (node.children) {
+                item.toggled = !item.toggled;
+            } else {
+                const filePath = `${iProject}/${jArchive}/${kFile}`;
+                let resFile = files[filePath];
+
+                if (!resFile) {
+                    getFile(filePath).then((res) => {
+                        console.log("FILES", res);
+                        resFile = res && res.data && res.data.data || {};
+                        resFile = convertProjectFile(resFile);
+                        addNewFile(filePath, resFile);
+                        setSelection(filePath);
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+                } else {
+                    addNewFile(filePath, resFile);
+                    setSelection(filePath);
                 }
             }
-            if (selected) {
-                selected.toggled = !selected.toggled;
-                selected.active = true;
-                setData(cpData);
-                setActiveId(selected.id);
-            }
-        } else {
-            console.log('OPEN FILE', node.id, node.path);
+            item.active = true;
+            setData(items);
         }
     }
 
@@ -80,4 +118,13 @@ ProjectsTree.defaultProps = {
     batchSize: 25,
 }
 
-export default ProjectsTree;
+const mapStateToProps = (state) => ({
+    files: state.files,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    addNewFile: (path, value) => dispatch(addNewFileAction(path, value)),
+    setSelection: (path) => dispatch(setSelectionAction(path)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectsTree);

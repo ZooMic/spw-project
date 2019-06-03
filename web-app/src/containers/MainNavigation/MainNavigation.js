@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/registrationActions';
-import { fileUploadSetOpen } from '../../actions/fileUploadActions';
+import { openWindow as openWindowAction } from '../../actions/windowsActions';
 import { main, first, noDisplay, wrapper, active } from './MainNavigation.module.scss';
 
 
-function MainNavigation ({ logoutAction, setFileUploadOpen, fileWindowOpened }) {
+function MainNavigation ({ logoutAction, openWindow, windows }) {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
+    const { files } = windows;
+
     const onCollapsed = () => setIsCollapsed(!isCollapsed);
-    const onFileUpload = () => setFileUploadOpen(!fileWindowOpened);
+    const onFileUpload = () => openWindow('files');
 
     return (
         <div className={main}>
@@ -22,7 +24,7 @@ function MainNavigation ({ logoutAction, setFileUploadOpen, fileWindowOpened }) 
                     }
                 </button>
                 <div className={isCollapsed ? '' : noDisplay}>
-                    <button onClick={onFileUpload} className={fileWindowOpened ? active : ''}>
+                    <button onClick={onFileUpload} className={files ? active : ''}>
                         <i className="fa fa-2x fa-folder-plus"/>
                     </button>
                     <button><i className="fa fa-2x fa-users-cog"/></button>
@@ -36,12 +38,12 @@ function MainNavigation ({ logoutAction, setFileUploadOpen, fileWindowOpened }) 
 };
 
 const mapStateToProps = (state) => ({
-    fileWindowOpened: state.fileUpload.isOpened,
+    windows: state.windows,
 });
 
 const mapDispatchToProps = (dispatch) => ({
+    openWindow: windowName => dispatch(openWindowAction(windowName)),
     logoutAction: () => dispatch(logout()),
-    setFileUploadOpen: (shouldOpen) => dispatch(fileUploadSetOpen(shouldOpen)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainNavigation);

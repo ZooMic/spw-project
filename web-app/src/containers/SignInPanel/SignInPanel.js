@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import Login from './Login';
 import Register from './Register';
-import Pending from './Pending';
+import Pending from '../../components/Pending/';
 
 import { loginAction } from '../../actions/registrationActions';
 
@@ -35,7 +35,7 @@ function SignInPanel ({ isPending, error, loginAction }) {
         <div className={main}>
         {
             isPending ?
-                <Pending /> :
+                <Pending className={main} /> :
                 isRegister ?
                     <Register onLogin={handleChangeRegister} onSumbit={onRegisterSubmit} error={error}/> :
                     <Login onRegister={handleChangeRegister} onSubmit={onLoginSubmit} error={error}/>

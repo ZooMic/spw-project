@@ -1,0 +1,45 @@
+.wrapper {
+    width: 100%;
+    height: 100%;
+    padding: 1em;
+
+    & h2 {
+        font-size: 1.5em;
+        text-align: center;
+        margin-bottom: 1em;
+        color: #247b27;
+    }
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.errorCSS {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    color: #c70000;
+    margin-bottom: 1em;
+}
+
+.uploadBtn {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.filesList {
+    width: 100%;
+    max-height: 75px;
+    overflow: overlay;
+    border: 3px solid white;
+
+    & li {
+        list-style-type: none;
+    }
+}
+
+.filesSizeCSS {
+    text-align: center;
+}
