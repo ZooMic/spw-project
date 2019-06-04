@@ -1,4 +1,4 @@
-export default function glProcessing(canvas, vertices, colors, indices) {
+export default function glProcessing(canvas, vertices, colors, indices, prop_angle) {
     var gl = canvas.getContext('experimental-webgl');
 
     var vertex_buffer = gl.createBuffer ();
@@ -125,9 +125,9 @@ export default function glProcessing(canvas, vertices, colors, indices) {
 
     var dt = time-time_old;
     
-    rotateZ(mov_matrix, 180);
-    rotateY(mov_matrix, 90);
-    rotateX(mov_matrix, dt*0.0001);
+    rotateZ(mov_matrix, 30 * 3.14 / 180);
+    rotateY(mov_matrix, (prop_angle.x * 3.14 / 180) + 90 * 3.14 / 180);
+    rotateX(mov_matrix, prop_angle.x * 3.14 / 180);
     time_old = time;
 
     gl.enable(gl.DEPTH_TEST);
@@ -143,6 +143,7 @@ export default function glProcessing(canvas, vertices, colors, indices) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
+    // window.requestAnimationFrame(animate);
     }
     animate(0);
 }
