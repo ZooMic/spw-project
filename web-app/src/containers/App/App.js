@@ -10,6 +10,7 @@ import MainNavigation from '../MainNavigation/';
 import Specification from '../Specifiaction/';
 
 import Windows from '../Windows/';
+import WindowPanel from '../../components/WindowPanel'
 
 import { checkStorage } from '../../actions/registrationActions';
 

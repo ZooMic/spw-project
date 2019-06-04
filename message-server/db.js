@@ -14,11 +14,7 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-const Message = sequelize.define('Message', { 
-  Uid: {
-    type: Sequelize.UUID,
-    allowNull: false
-  },
+const Message = sequelize.define('Message', {  
   userUid: {
     type: Sequelize.UUID,
     allowNull: false
@@ -27,7 +23,7 @@ const Message = sequelize.define('Message', {
     type: Sequelize.UUID,
     allowNull: false
   },
-  userName: {
+  username: {
     type: Sequelize.STRING,
     allowNull: false
   },
@@ -35,11 +31,11 @@ const Message = sequelize.define('Message', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  Subject: {
+  subject: {
     type: Sequelize.STRING,
     allowNull: true
   },
-  Text: {
+  text: {
     type: Sequelize.STRING,
     allowNull: true
   }
@@ -48,9 +44,9 @@ const Message = sequelize.define('Message', {
 Message.sync();  
 
 exports.deleteMessage= async function deleteMessage(messageUid) {
-  return await Preset.destroy({
+  return await Message.destroy({
     where: {
-      uid: messageUid
+      id: messageUid
     }
   }).then(() => {
     console.log(`Message with id ${messageUid} deleted`);
@@ -61,6 +57,8 @@ exports.addNewMessage = async function addNewMessage(message) {
   return await Message.create(message);
 } 
 exports.getUserReceivedMessages = async function getUserReceivedMessages(userUid) {
+  console.log('Getting user received messages');
+  console.log(userUid);
   return await Message.findAll({
     where: {
       userUid: userUid
@@ -68,6 +66,8 @@ exports.getUserReceivedMessages = async function getUserReceivedMessages(userUid
 }
 
 exports.getUserSentMessages = async function getUserSentMessages(userUid) {
+  console.log('Getting user sent messages');
+  console.log(userUid);
   return await Message.findAll({
     where: {
       senderUid: userUid

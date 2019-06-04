@@ -3,63 +3,69 @@ import * as signalR from '@aspnet/signalr';
 import { Button, ListGroup, ListGroupItem, InputGroup, FormControl } from 'react-bootstrap'; 
 import { chat, chatUsers, chatMessages } from './Chat.module.scss';
 import faker from 'Faker';
+import { connect } from 'react-redux';
+import { fetchUsersAction } from './../../actions/usersActions';
 
 class Chat extends React.Component {
     constructor(props) {
       super(props);
+
+      const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("http://localhost:5000/chat")
+        .configureLogging(signalR.LogLevel.None)
+        .build();
+
+      hubConnection
+          .start()
+          .then(() => console.log('Connection started!'))
+          .catch(err => console.log(err));
+
+      hubConnection.on('sendToAll', (nick, receivedMessage) => {
+        const text = `${nick}: ${receivedMessage}`;
+        const messages = this.state.messages.concat([text]);
+        this.setState({ messages });
+      }); 
+     
+
+      let username = 'Anonim';
+      if (localStorage.getItem('username')) {
+        username = localStorage.getItem('username');
+      } else if (sessionStorage.getItem('username')) {
+        username = sessionStorage.getItem('username');
+      }
+
+      console.log('Fetching users');
+      this.props.fetchUsers();
       
       this.state = {
         contacts: [],
         selectedContactIndex: -1,
-        username: '',
+        username: username,
         message: '',
         messages: [],
-        hubConnection: null,
+        hubConnection: hubConnection,
       };
     }
 
-    componentDidMount = () => { 
-        this.addFakeContactsToState();
-
+    componentDidMount = () => {   
         window.addEventListener('keypress', this.onKeyPressed, true);
-
-        const username = this.props.username ? this.props.username : 'Anonim';
-      
-        const hubConnection = new signalR.HubConnectionBuilder()
-        .withUrl("http://localhost:5000/chat")
-        .configureLogging(signalR.LogLevel.None)
-        .build();
-      
-        this.setState({ hubConnection, username }, () => {
-          this.state.hubConnection
-            .start()
-            .then(() => console.log('Connection started!'))
-            .catch(err => console.log(err));
-
-            this.state.hubConnection.on('sendToAll', (nick, receivedMessage) => {
-                const text = `${nick}: ${receivedMessage}`;
-                const messages = this.state.messages.concat([text]);
-                this.setState({ messages });
-            });
-        });
-    }
-
-    addFakeContactsToState = () => {
-      let fakeContacts = [];
-      for (let i = 0; i < 15; i++) {
-        fakeContacts.push(faker.Name.findName());
-      }
-      this.setState({contacts: fakeContacts});
-    }
+    } 
 
     parseContactsToListGroupItems = () => {
-      return this.state.contacts.map((contact, index) => {
+      console.log(this.props.users);
+      if (!this.props.users) {
+        return <ListGroupItem >
+          Getting users ...
+        </ListGroupItem>
+      }
+
+      return this.props.users.filter((user) => { return user.userName !== this.state.username; }).map((contact, index) => {
         return <ListGroupItem 
                   action 
                   active={this.state.selectedContactIndex === index}
                   key={index} 
-                  onClick={() => this.setState({selectedContactIndex: index})}> 
-                    {contact} 
+                  onClick={() => this.setState({selectedContactIndex: index, messages: []})}> 
+                  {contact.userName} 
                 </ListGroupItem>
       });
     } 
@@ -112,4 +118,15 @@ class Chat extends React.Component {
     )}
   }
 
-export default Chat;
+
+const mapStateToProps = (state) => ({
+    users: state.users.users,
+    isPending: state.users.pending,
+    error: state.users.error,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    fetchUsers: () => dispatch(fetchUsersAction()),
+});
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

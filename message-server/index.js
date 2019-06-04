@@ -11,26 +11,51 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(cors());
 
-app.get('/messages/received', async (req, res) => {
-    const messages = await db.getUserReceivedMessages(req.body.userUid);
-    res.send(messages);
+app.get('/messages/received', async (req, res) => { 
+    try { 
+        const messages = await db.getUserReceivedMessages(req.query.userId);
+        res.send(messages);
+    } catch (error) {
+        console.log(error);
+        res.statusCode = 400;
+        res.send(error);
+    }
 });
 
-app.get('/messages/sent', async (req, res) => {
-    const messages = await db.getUserSentMessages(req.body.userUid);
-    res.send(messages);
+app.get('/messages/sent', async (req, res) => { 
+    try { 
+        const messages = await db.getUserSentMessages(req.query.userId);
+        res.send(messages);
+    } catch (error) {
+        console.log(error);
+        res.statusCode = 400;
+        res.send(error);
+    } 
 });
 
-app.post('/messages', async (req, res) => {
-    const message = await db.addNewMessage(req.body.message);    
-    console.log(`Message with uid: ${message.uid} created`);
-    return res.send(message);
+app.post('/messages', async (req, res) => { 
+    try { 
+        const message = await db.addNewMessage(req.body);    
+        console.log(`Message with uid: ${message.uid} created`);
+        return res.send(message);
+    } catch (error) {
+        console.log(error);
+        res.statusCode = 400;
+        res.send(error);
+    }  
 }); 
 
 app.delete('/messages', async (req, res) => {
-    await db.deleteMessage(req.body.messageUid);    
-    console.log(`Message with uid: ${message.uid} deleted`);
+    console.log(req);
+    try { 
+        await db.deleteMessage(req.body.id);    
+    console.log(`Message with uid: ${req.body.id} deleted`);
     return res.send();
+    } catch (error) {
+        console.log(error);
+        res.statusCode = 400;
+        res.send(error);
+    }  
 }); 
 
 app.listen(port, () => console.log(`Message server listening on port ${port}`));

@@ -4,9 +4,9 @@ import { logout } from '../../actions/registrationActions';
 import { openWindow as openWindowAction } from '../../actions/windowsActions';
 import { main, first, noDisplay, wrapper, active } from './MainNavigation.module.scss';
 import Chat from '../Chat';
+import Mail from '../Mail';
 
-
-function MainNavigation ({ logoutAction, setFileUploadOpen, fileWindowOpened, setWindowContent }) {
+function MainNavigation ({ logoutAction, openWindow, windows, setWindowContent }) {
     const [isCollapsed, setIsCollapsed] = useState(true);
 
     const { files } = windows;
@@ -15,7 +15,7 @@ function MainNavigation ({ logoutAction, setFileUploadOpen, fileWindowOpened, se
     const onFileUpload = () => openWindow('files');
 
     const onMailClick = () => {
-        setWindowContent(<span> MAIL </span>)
+        setWindowContent(<Mail></Mail>)
     };
 
     const onChatClick = () => {

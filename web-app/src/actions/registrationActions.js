@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const apiUrl = 'https://localhost:44325/Auth'
+const apiUrl = 'https://localhost:44325/Auth' 
+const jwt = require('jsonwebtoken');
 
 export const loginAction = (username, password, rememberMe) => {
     return (dispatch) => {
@@ -9,8 +10,14 @@ export const loginAction = (username, password, rememberMe) => {
         .then(response => {
             const token = response.data;
             if (token) {
+                localStorage.removeItem('token'); sessionStorage.removeItem('token'); 
+                localStorage.removeItem('username'); sessionStorage.removeItem('username'); 
+                localStorage.removeItem('userId'); sessionStorage.removeItem('userId');
+                
                 const storage = rememberMe ? localStorage : sessionStorage
-                storage.setItem('token', token);
+                storage.setItem('token', token.accessToken.token);
+                storage.setItem('username', username);
+                storage.setItem('userId', jwt.decode(token.accessToken.token).id); 
                 setTimeout(() => { //Debug purpose only!
                     dispatch(loginFetchingFinished(token));
                 }, 2500);
