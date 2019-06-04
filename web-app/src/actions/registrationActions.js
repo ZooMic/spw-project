@@ -1,12 +1,26 @@
 import axios from 'axios';
 
-const apiUrl = 'https://localhost:44325/Auth' 
+const apiUrl = 'https://localhost:44325' 
 const jwt = require('jsonwebtoken');
+
+export const registerAction = (username, password) => {
+    return (dispatch) => { 
+        axios.post(`${apiUrl}/Account/register`, { username, password })
+        .then(response => { 
+        })
+        .catch(error => {
+            if (error && error.response && error.response.data && error.response.data.message) {
+                const msg = error.response.data.message;
+                dispatch(loginError(msg));
+            }
+        });
+    }
+};
 
 export const loginAction = (username, password, rememberMe) => {
     return (dispatch) => {
         dispatch(loginFetchingStarted());
-        axios.post(`${apiUrl}/login`, { username, password })
+        axios.post(`${apiUrl}/Auth/login`, { username, password })
         .then(response => {
             const token = response.data;
             if (token) {
@@ -54,6 +68,9 @@ const loginError = (error) => ({
 
 export const REGISTRATION_LOGOUT = 'REGISTRATION_LOGOUT';
 export const logout = () => {
+    localStorage.removeItem('token'); sessionStorage.removeItem('token'); 
+    localStorage.removeItem('username'); sessionStorage.removeItem('username'); 
+    localStorage.removeItem('userId'); sessionStorage.removeItem('userId');
     return {
         type: REGISTRATION_LOGOUT,
     };

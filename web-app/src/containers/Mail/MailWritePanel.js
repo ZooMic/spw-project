@@ -2,17 +2,27 @@ import React, {useState} from 'react';
 import {mailReadPanel, mailProperty, propertyHeader, propertyBody} from './Mail.module.scss'; 
 import { Button, InputGroup, Form } from 'react-bootstrap';
 
-function MailWritePanel ({ sendMail, quitWriting }) {
+function MailWritePanel ({ sendMail, quitWriting, validate }) {
     const [receiverUsername, setReceiverUsername] = useState('');
     const [subject, setSubject] = useState('');
     const [text, setText] = useState('');
+    const [valid, setValid] = useState(true);
 
-    const sendEmail = () => {
+    const sendEmail = () => { 
+        console.log(validate(receiverUsername));
+        if (!validate(receiverUsername)) {
+            setValid(false);
+            return;
+        } 
+
+        setValid(true);
+        console.log(valid);
         const mail = {
             username: receiverUsername,
             subject: subject,
             text: text,
         }
+
 
         sendMail(mail);
     }
@@ -24,6 +34,7 @@ function MailWritePanel ({ sendMail, quitWriting }) {
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Receiver username</Form.Label>
                         <Form.Control value={receiverUsername} onChange={(event)=>{setReceiverUsername(event.currentTarget.value)}}/>
+                        <div style={{'color' : 'red'}}>{valid ? '' : 'Wrong username'} </div>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Subject</Form.Label>

@@ -5,12 +5,12 @@ import Login from './Login';
 import Register from './Register';
 import Pending from '../../components/Pending/';
 
-import { loginAction } from '../../actions/registrationActions';
+import { loginAction, registerAction } from '../../actions/registrationActions';
 
 import { main } from './SignInPanel.module.scss';
 
 
-function SignInPanel ({ isPending, error, loginAction }) {
+function SignInPanel ({ isPending, error, loginAction, register }) {
     const [isRegister, setRegister] = useState(false);
 
     const onLoginSubmit = (event) => {
@@ -20,15 +20,20 @@ function SignInPanel ({ isPending, error, loginAction }) {
         const password = target.querySelector('#sign-in-password').value;
         const rememberMe = target.querySelector('#sign-in-remember-me').checked;
         loginAction(login, password, rememberMe);
+    } 
+
+    const handleChangeRegister = () => {
+        setRegister(!isRegister);
     }
 
     const onRegisterSubmit = (event) => {
         event.preventDefault();
         // TODO - send new user data
-    }
-
-    const handleChangeRegister = () => {
-        setRegister(!isRegister);
+        const target = event.target;
+        const username = target.querySelector('#register-username').value;
+        const password = target.querySelector('#register-password').value;
+        register(username, password);
+        setRegister(false);
     }
 
     return (
@@ -51,6 +56,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     loginAction: (login, password, rememberMe) => dispatch(loginAction(login, password, rememberMe)),
+    register: (username, password) => dispatch(registerAction(username, password)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignInPanel);

@@ -81,7 +81,7 @@ export const fetchReceivedMailsAction = (userId) => {
             }
         })
         .then(response => {
-            const mails = response.data; 
+            const mails = response.data.sort((a, b) => {return  b.id - a.id });  
             console.log('Received mails'); 
             console.log(mails); 
             if (mails) { 
@@ -109,7 +109,7 @@ export const fetchSentMailsAction = (userId) => {
             }
         })
         .then(response => {
-            const mails = response.data; 
+            const mails = response.data.sort((a, b) => {return  b.id - a.id });
             console.log('Sent mails'); 
             console.log(mails); 
             if (mails) { 

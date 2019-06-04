@@ -83,7 +83,7 @@ class Chat extends React.Component {
       }
 
       console.log(email);
-      return this.state.writeMode ? <MailWritePanel sendMail={(mail)=>this.sendMail(mail)} quitWriting={()=>this.toggleWriteMode()}/> : <MailReadPanel mail={email}/>; 
+      return this.state.writeMode ? <MailWritePanel sendMail={(mail)=>this.sendMail(mail)} quitWriting={()=>this.toggleWriteMode()} validate={(username)=>{return this.validate(username)}}/> : <MailReadPanel mail={email}/>; 
     }
 
     toggleWriteMode = () => {
@@ -115,6 +115,19 @@ class Chat extends React.Component {
       mail.userUid = user.id;
       this.props.sendMail(mail);
     }
+
+    refreshMails = () => {
+      this.props.fetchReceived(this.state.userId);
+      this.props.fetchSent(this.state.userId);
+    }
+
+    validate = (username) => {
+      console.log(username);
+      console.log(this.props.users.map((user)=> {return user.userName}));
+      console.log(this.props.users.map((user)=> {return user.userName}).some(name =>  username == name));
+
+      return this.props.users.map((user)=> {return user.userName}).some(name =>  username == name);
+    }
   
     render() { 
 
@@ -124,14 +137,16 @@ class Chat extends React.Component {
             <div className={buttons}> 
                 <Button onClick={() => this.toggleWriteMode()}  size="lg" block> Write </Button>
                 <Button onClick={() => this.deleteSelectedMail()}variant="danger" size="sm" block> Delete </Button>
+                <Button onClick={() => this.refreshMails()}variant="success" size="sm" block> Refresh </Button>
+             
             </div>
-            <div className={header}>Received messages</div>
+            <div className={header}>Received messages    {this.props.receivedPending ? ' Refreshing' : '' }</div>
             <div className={received}>   
               <ListGroup> 
                 {this.parseMailsToListGroupItems(this.props.mailsReceived, 'received')}
               </ListGroup>  
             </div>
-            <div className={header}> Sent messages </div> 
+            <div className={header}> Sent messages  {this.props.sentPending ? ' Refreshing' : '' } </div> 
             <div className={sent}>  
               <ListGroup> 
                 {this.parseMailsToListGroupItems(this.props.mailsSent, 'sent')}

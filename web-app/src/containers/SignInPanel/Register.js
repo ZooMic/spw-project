@@ -11,11 +11,11 @@ function Register ({ onLogin, onSubmit }) {
             <div className={margin}>
                 <h2>Register</h2>
                 <Form onSubmit={onSubmit}>
-                    <Form.Group controlId="sign-in-login">
-                        <Form.Label>Login</Form.Label>
+                    <Form.Group controlId="register-username">
+                        <Form.Label>Username / Email</Form.Label>
                         <Form.Control type="text" placeholder="Enter login" />
                     </Form.Group>
-                    <Form.Group controlId="sign-in-password">
+                    <Form.Group controlId="register-password">
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Enter password" />
                     </Form.Group>
