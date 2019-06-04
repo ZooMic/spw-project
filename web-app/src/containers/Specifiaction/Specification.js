@@ -5,13 +5,13 @@ function Specification () {
     return (
         <div className={wrapper}>
             <p>Specification</p>
-            <div>
+            {/* <div>
               <p> Holi shit!</p>
               <p> Holi shit!</p>
               <p> Holi shit!</p>
               <p> Holi shit!</p>
               <p> Holi shit!</p>
-            </div>
+            </div> */}
         </div>
     );
 }
